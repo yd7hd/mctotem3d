@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>McTotem3D - 3D Mini Me Totem Oluşturucu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2c3e50; /* Koyu Mavi */
+            color: #ecf0f1; /* Açık Gri */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #3498db; /* Parlak Mavi */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .box {
+            background-color: #34495e; /* Daha Koyu Mavi */
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        label {
+            font-weight: bold;
+            color: #bdc3c7; /* Orta Gri */
+            font-size: 1.1rem;
+        }
+        input[type="text"],
+        input[type="file"],
+        select {
+            padding: 0.8rem;
+            border: 1px solid #7f8c8d; /* Gri Kenarlık */
+            border-radius: 8px;
+            background-color: #2c3e50; /* Koyu Mavi */
+            color: #ecf0f1;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="file"]:focus,
+        select:focus {
+            border-color: #3498db; /* Parlak Mavi Odak */
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+            outline: none;
+        }
+        input[type="file"]::file-selector-button {
+            background-color: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 1rem;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #2980b9;
+        }
+        button {
+            background-color: #2ecc71; /* Zümrüt Yeşili */
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #27ae60; /* Daha Koyu Yeşil */
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background-color: #7f8c8d; /* Gri */
+            cursor: not-allowed;
+            transform: none;
+        }
+        .message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .message.success {
+            background-color: #27ae60; /* Yeşil */
+            color: white;
+        }
+        .message.error {
+            background-color: #e74c3c; /* Kırmızı */
+            color: white;
+        }
+        .adsense-container, .kofi-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #34495e;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .kofi-container a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .kofi-container a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            margin-top: auto; /* Sayfanın altına sabitle */
+            padding-top: 2rem;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+    <h1>McTotem3D — 3D Mini Me Totem Oluşturucu</h1>
+
+    <div class="box">
+        <div class="input-group">
+            <label for="usernameInput">Minecraft Kullanıcı Adı (İsteğe Bağlı):</label>
+            <input type="text" id="usernameInput" placeholder="Steve, Notch, etc." />
+        </div>
+
+        <div class="input-group">
+            <label for="skinFileInput">Veya Kendi Skin PNG'nizi Yükleyin:</label>
+            <input type="file" id="skinFileInput" accept="image/png" />
+        </div>
+
+        <div class="input-group">
+            <label for="packFormatSelect">Minecraft Sürümü (Kaynak Paketi Formatı):</label>
+            <select id="packFormatSelect">
+                <option value="15" selected>1.20.x</option>
+                <option value="12">1.19.4</option>
+                <option value="10">1.19 - 1.19.3</option>
+                <option value="9">1.18 - 1.18.2</option>
+                <option value="8">1.17 - 1.17.1</option>
+                <option value="7">1.16 - 1.16.5</option>
+                </select>
+        </div>
+
+        <button id="generateBtn">Totemi Oluştur ve İndir</button>
+
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
+
+    <div class="kofi-container">
+        <p>Projenizi beğendiniz mi? Bana bir kahve ısmarlayarak destek olabilirsiniz!</p>
+        <p><a href="https://ko-fi.com/yd7hd" target="_blank">☕ Lütfen Destek Olup Minecraft Almama Yardım Edin(Kofi)</a></p>
+        <p>Ayrıca Discord sunucumuza katılarak bizimle iletişime geçebilirsiniz!</p>
+        <p><a href="https://discord.gg/YQbE3CaG" target="_blank">💬 Discord Sunucumuza Katılın</a></p>
+    </div>
+
+    <div class="adsense-container">
+        <p>Reklam Alanı</p>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9689580691295815"
+             crossorigin="anonymous"></script>
+        </div>
+
+    <footer>
+    <p>
+        &copy; 2025 McTotem3D. Tüm Hakları Saklıdır. | 
+        <a href="privacy.html" style="color: #7f8c8d; text-decoration: none;">Gizlilik Politikası</a> | 
+        <a href="terms.html" style="color: #7f8c8d; text-decoration: none;">Kullanım Şartları</a>
+    </p>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const usernameInput = document.getElementById('usernameInput');
+            const skinFileInput = document.getElementById('skinFileInput');
+            const packFormatSelect = document.getElementById('packFormatSelect');
+            const generateBtn = document.getElementById('generateBtn');
+            const messageDiv = document.getElementById('message');
+
+            // --- 3D Mini Me Model JSON'u (Sizin sağladığınız skin.json içeriği) ---
+            const miniMe3DModel = {
+                "credit": "Made with Blockbench",
+                "texture_size": [64, 64],
+                "textures": {
+                    "0": "item/totem_of_undying"
+                },
+                "elements": [
+                    {"from":[-4,24,-4],"to":[4,32,4],"faces":{"north":{"uv":[2,2,4,4],"texture":"#0"},"east":{"uv":[0,2,2,4],"texture":"#0"},"south":{"uv":[6,2,8,4],"texture":"#0"},"west":{"uv":[4,2,6,4],"texture":"#0"},"up":{"uv":[4,2,2,0],"texture":"#0"},"down":{"uv":[6,0,4,2],"texture":"#0"}}},
+                    {"from":[-4.5,23,-4.5],"to":[4.5,32,4.5],"faces":{"north":{"uv":[10,2,12,4],"texture":"#0"},"east":{"uv":[8,2,10,4],"texture":"#0"},"south":{"uv":[14,2,16,4],"texture":"#0"},"west":{"uv":[12,2,14,4],"texture":"#0"},"up":{"uv":[12,2,10,0],"texture":"#0"},"down":{"uv":[14,0,12,2],"texture":"#0"}}},
+                    {"from":[-4,12,-2],"to":[4,24,2],"faces":{"north":{"uv":[5,5,7,8],"texture":"#0"},"east":{"uv":[4,5,5,8],"texture":"#0"},"south":{"uv":[8,5,10,8],"texture":"#0"},"west":{"uv":[7,5,8,8],"texture":"#0"},"up":{"uv":[7,5,5,4],"texture":"#0"},"down":{"uv":[9,4,7,5],"texture":"#0"}}},
+                    {"from":[-4.25,11.75,-2.25],"to":[4.25,24.25,2.25],"faces":{"north":{"uv":[5,9,7,12],"texture":"#0"},"east":{"uv":[4,9,5,12],"texture":"#0"},"south":{"uv":[8,9,10,12],"texture":"#0"},"west":{"uv":[7,9,8,12],"texture":"#0"},"up":{"uv":[7,9,5,8],"texture":"#0"},"down":{"uv":[9,8,7,9],"texture":"#0"}}},
+                    {"from":[4,12,-2],"to":[7,24,2],"faces":{"north":{"uv":[11,5,11.75,8],"texture":"#0"},"east":{"uv":[10,5,11,8],"texture":"#0"},"south":{"uv":[12.75,5,13.5,8],"texture":"#0"},"west":{"uv":[11.75,5,12.75,8],"texture":"#0"},"up":{"uv":[11.75,5,11,4],"texture":"#0"},"down":{"uv":[12.5,4,11.75,5],"texture":"#0"}}},
+                    {"from":[3.75,11.75,-2.25],"to":[7.25,24.25,2.25],"faces":{"north":{"uv":[11,9,11.75,12],"texture":"#0"},"east":{"uv":[10,9,11,12],"texture":"#0"},"south":{"uv":[12.75,9,13.5,12],"texture":"#0"},"west":{"uv":[11.75,9,12.75,12],"texture":"#0"},"up":{"uv":[11.75,9,11,8],"texture":"#0"},"down":{"uv":[12.5,8,11.75,9],"texture":"#0"}}},
+                    {"from":[-7,12,-2],"to":[-4,24,2],"faces":{"north":{"uv":[9,13,9.75,16],"texture":"#0"},"east":{"uv":[8,13,9,16],"texture":"#0"},"south":{"uv":[10.75,13,11.5,16],"texture":"#0"},"west":{"uv":[9.75,13,10.75,16],"texture":"#0"},"up":{"uv":[9.75,13,9,12],"texture":"#0"},"down":{"uv":[10.5,12,9.75,13],"texture":"#0"}}},
+                    {"from":[-7.25,11.75,-2.25],"to":[-3.75,24.25,2.25],"faces":{"north":{"uv":[13,13,13.75,16],"texture":"#0"},"east":{"uv":[12,13,13,16],"texture":"#0"},"south":{"uv":[14.75,13,15.5,16],"texture":"#0"},"west":{"uv":[13.75,13,14.75,16],"texture":"#0"},"up":{"uv":[13.75,13,13,12],"texture":"#0"},"down":{"uv":[14.5,12,13.75,13],"texture":"#0"}}},
+                    {"from":[-0.1,0,-2],"to":[3.9,12,2],"faces":{"north":{"uv":[1,5,2,8],"texture":"#0"},"east":{"uv":[0,5,1,8],"texture":"#0"},"south":{"uv":[3,5,4,8],"texture":"#0"},"west":{"uv":[2,5,3,8],"texture":"#0"},"up":{"uv":[2,5,1,4],"texture":"#0"},"down":{"uv":[3,4,2,5],"texture":"#0"}}},
+                    {"from":[-0.35,-0.25,-2.25],"to":[4.15,12.25,2.25],"faces":{"north":{"uv":[1,9,2,12],"texture":"#0"},"east":{"uv":[0,9,1,12],"texture":"#0"},"south":{"uv":[3,9,4,12],"texture":"#0"},"west":{"uv":[2,9,3,12],"texture":"#0"},"up":{"uv":[2,9,1,8],"texture":"#0"},"down":{"uv":[3,8,2,9],"texture":"#0"}}},
+                    {"from":[-3.9,0,-2],"to":[0.1,12,2],"faces":{"north":{"uv":[5,13,6,16],"texture":"#0"},"east":{"uv":[4,13,5,16],"texture":"#0"},"south":{"uv":[7,13,8,16],"texture":"#0"},"west":{"uv":[6,13,7,16],"texture":"#0"},"up":{"uv":[6,13,5,12],"texture":"#0"},"down":{"uv":[7,12,6,13],"texture":"#0"}}},
+                    {"from":[-4.15,-0.25,-2.25],"to":[0.35,12.25,2.25],"faces":{"north":{"uv":[1,13,2,16],"texture":"#0"},"east":{"uv":[0,13,1,16],"texture":"#0"},"south":{"uv":[3,13,4,16],"texture":"#0"},"west":{"uv":[2,13,3,16],"texture":"#0"},"up":{"uv":[2,13,1,12],"texture":"#0"},"down":{"uv":[3,12,2,13],"texture":"#0"}}}
+                ],
+                "display": {
+                    "thirdperson_righthand":{"rotation":[0,90,0],"translation":[2.5,-0.5,0.5],"scale":[0.3,0.3,0.3]},
+                    "thirdperson_lefthand":{"rotation":[0,90,0],"translation":[2.5,-0.5,5],"scale":[0.3,0.3,0.3]},
+                    "firstperson_righthand":{"rotation":[-20,90,0],"translation":[-0.75,2.9,3.75],"scale":[0.2,0.2,0.2]},
+                    "firstperson_lefthand":{"rotation":[-20,90,0],"translation":[-0.75,4,6.75],"scale":[0.2,0.2,0.2]},
+                    "ground":{"translation":[3,2.75,2.5],"scale":[0.4,0.4,0.4]},
+                    "gui":{"rotation":[0,-180,0],"translation":[-4,-3.75,0],"scale":[0.45,0.45,0.45]},
+                    "head":{"translation":[11.5,-4,3],"scale":[0.3,0.3,0.3]},
+                    "fixed":{"translation":[3.25,-3.5,0],"scale":[0.4,0.4,0.4]}
+                },
+                "groups":[
+                    {"name":"Head","origin":[0,24,0],"color":0,"children":[0,1]},
+                    {"name":"Body","origin":[0,24,0],"color":0,"children":[2,3]},
+                    {"name":"RightArm","origin":[5,22,0],"color":0,"children":[4,5]},
+                    {"name":"LeftArm","origin":[-5,22,0],"color":0,"children":[6,7]},
+                    {"name":"RightLeg","origin":[1.9,12,0],"color":0,"children":[8,9]},
+                    {"name":"LeftLeg","origin":[-1.9,12,0],"color":0,"children":[10,11]}
+                ]
+            };
+
+            // Skin işleme fonksiyonu: Skin PNG'sinden 64x64 mini me dokusu oluşturur
+            async function processSkinForTotem(skinBlob) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const textureSize = 64; // Blockbench modelinin beklediği doku boyutu
+                            canvas.width = textureSize;
+                            canvas.height = textureSize;
+                            const ctx = canvas.getContext('2d');
+                            ctx.imageSmoothingEnabled = false; 
+                            ctx.webkitImageSmoothingEnabled = false;
+                            ctx.msImageSmoothingEnabled = false;
+
+                            // Skin'i doğrudan 64x64 tuvale çiziyoruz.
+                            ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, textureSize, textureSize);
+
+                            canvas.toBlob((blob) => {
+                                if (blob) {
+                                    resolve(blob);
+                                } else {
+                                    reject(new Error("Skin işlenirken bir sorun oluştu."));
+                                }
+                            }, 'image/png');
+                        };
+                        img.onerror = () => reject(new Error("Resim yüklenemedi veya bozuk."));
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = () => reject(new Error("Dosya okuma hatası."));
+                    reader.readAsDataURL(skinBlob);
+                });
+            }
+
+            // Mesaj gösterme fonksiyonu
+            function showMessage(msg, type) {
+                messageDiv.textContent = msg;
+                messageDiv.className = `message ${type}`;
+                messageDiv.style.display = 'block';
+            }
+
+            // Buton tıklama olayı
+            generateBtn.addEventListener('click', async () => {
+                generateBtn.disabled = true;
+                messageDiv.style.display = 'none';
+
+                const username = usernameInput.value.trim();
+                const packFormat = parseInt(packFormatSelect.value, 10);
+                let skinBlob = null;
+
+                if (skinFileInput.files.length > 0) {
+                    skinBlob = skinFileInput.files[0];
+                } else if (username.length > 0) {
+                    try {
+                        // Kullanıcının UUID'sini al
+                        const uuidRes = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+                        if (!uuidRes.ok) {
+                            throw new Error("Kullanıcı adı bulunamadı. Lütfen kontrol edin.");
+                        }
+                        const uuidData = await uuidRes.json();
+                        const uuid = uuidData.id;
+
+                        // UUID ile skin URL'sini al
+                        const skinRes = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`);
+                        if (!skinRes.ok) {
+                            throw new Error("Skin bilgisi alınamadı. Minecraft sunucularında sorun olabilir.");
+                        }
+                        const skinData = await skinRes.json();
+                        const properties = skinData.properties.find(prop => prop.name === 'textures');
+                        if (!properties) {
+                             throw new Error("Skin verisi bulunamadı. Bu kullanıcının skin'i olmayabilir.");
+                        }
+                        const textureValue = JSON.parse(atob(properties.value));
+                        const skinUrl = textureValue.textures.SKIN.url;
+
+                        // Skin görselini indir
+                        const response = await fetch(skinUrl);
+                        if (!response.ok) {
+                            throw new Error("Skin görseli indirilemedi.");
+                        }
+                        skinBlob = await response.blob();
+
+                    } catch (error) {
+                        showMessage(`Hata: ${error.message}`, 'error');
+                        generateBtn.disabled = false;
+                        return;
+                    }
+                } else {
+                    showMessage("Lütfen bir Minecraft kullanıcı adı girin veya skin PNG'si yükleyin.", 'error');
+                    generateBtn.disabled = false;
+                    return;
+                }
+
+                if (!skinBlob) {
+                    showMessage("Skin verisi alınamadı. Lütfen tekrar deneyin.", 'error');
+                    generateBtn.disabled = false;
+                    return;
+                }
+
+                try {
+                    // Skin blob'unu 3D model için uygun dokuya dönüştür
+                    const processedSkinBlob = await processSkinForTotem(skinBlob);
+
+                    // Yeni JSZip nesnesi oluştur
+                    const zip = new JSZip();
+
+                    // pack.mcmeta dosyası (İstenen açıklama ile güncellendi)
+                    const packMeta = {
+                        pack: {
+                            pack_format: packFormat,
+                            description: "§f§l↪§e§l Made By Yd7hd §6§l3D Totem§r\n§2≪§a mctotem3d §2 ≫" 
+                        }
+                    };
+                    zip.file("pack.mcmeta", JSON.stringify(packMeta, null, 2));
+
+                    // assets/minecraft/models/item/skin.json (3D model JSON'u)
+                    zip.folder("assets/minecraft/models/item").file("skin.json", JSON.stringify(miniMe3DModel, null, 2));
+
+                    // assets/minecraft/models/item/totem_of_undying.json (parent olarak skin.json'ı kullanır)
+                    const itemTotemModel = {
+                        "parent": "item/skin",
+                        "textures": {
+                            "layer0": "item/totem_of_undying"
+                        }
+                    };
+                    zip.folder("assets/minecraft/models/item").file("totem_of_undying.json", JSON.stringify(itemTotemModel, null, 2));
+
+                    // assets/minecraft/textures/item/totem_of_undying.png (işlenmiş skin dokusu)
+                    zip.folder("assets/minecraft/textures/item").file("totem_of_undying.png", processedSkinBlob);
+
+                    // Zip dosyasını oluştur ve indir
+                    const content = await zip.generateAsync({ type: "blob" });
+                    saveAs(content, `MCTotem3D_3DMiniMe_Totem_${username || 'Custom'}.zip`);
+
+                    showMessage("3D Mini Me kaynak paketi başarıyla oluşturuldu ve indirildi!", 'success');
+
+                } catch (error) {
+                    console.error("Kaynak paketi oluşturulurken hata:", error);
+                    showMessage(`Hata: ${error.message}`, 'error');
+                } finally {
+                    generateBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
